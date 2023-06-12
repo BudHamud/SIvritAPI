@@ -1,0 +1,12 @@
+[
+  {
+    "level": 1,
+    "question": "¿Cuál es la capital de Francia?",
+    "answers": [
+      { "text": "Madrid", "isCorrect": false },
+      { "text": "París", "isCorrect": true },
+      { "text": "Berlín", "isCorrect": false },
+      { "text": "Roma", "isCorrect": false }
+    ]
+  }
+]
