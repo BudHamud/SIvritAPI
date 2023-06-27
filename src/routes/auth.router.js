@@ -55,7 +55,7 @@ router.post('/login', async (req, res) => {
       sameSite: 'none',
     };
 
-    res.cookie('token', token, cookieOptions).json({ token });
+    res.cookie('token', token, cookieOptions).json({ user });
   } catch (error) {
     res.status(500).json({ message: 'Login failed' });
   }
@@ -90,10 +90,10 @@ router.get('/checkLoggedIn', (req, res) => {
 
     const { userId } = decoded;
 
-    const loggedUser = await userModel.findById(userId)
+    const loggedUser = await userModel.findById(userId);
     
     if (loggedUser) {
-      return res.json({ isLoggedIn: true });
+      return res.json({ isLoggedIn: true, user: loggedUser });
     }
     return res.json({ isLoggedIn: false });
   });

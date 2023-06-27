@@ -7,7 +7,7 @@ import 'dotenv/config.js';
 import { connectDB } from './config/dbConfig.js';
 import auth from './routes/auth.router.js';
 import protect from './routes/protected.router.js';
-import questions from './routes/question.router.js';
+import learn from './routes/learn.router.js';
 
 const PORT = process.env.PORT || 8080;
 
@@ -34,7 +34,7 @@ connectDB();
 
 app.use('/api/auth', auth);
 app.use('/api/protected', protect);
-app.use('/api', questions); // Ruta para agregar preguntas
+app.use('/api/learn', learn); // Ruta para agregar preguntas
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
