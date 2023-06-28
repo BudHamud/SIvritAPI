@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import 'dotenv/config'
 
 export const comparePasswords = async (password, hashedPassword) => {
   try {
@@ -9,3 +10,14 @@ export const comparePasswords = async (password, hashedPassword) => {
     throw error;
   }
 };
+
+export const sessionConfig = {
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+  },
+}

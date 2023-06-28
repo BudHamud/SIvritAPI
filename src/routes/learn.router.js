@@ -7,89 +7,96 @@ const router = Router();
 const questions = [
   {
     unit: 1,
-    level: 1,
+    level: 2,
     exercises: [
       {
-        question: "¿Como se dice papa?",
+        question: "¿Como se dice manzana?",
         answers: [
           {
-            text: "Aba",
+            text: "Tapuaj",
             isCorrect: true,
           },
           {
-            text: "Ima",
+            text: "Tapuz",
             isCorrect: false,
           },
           {
-            text: "Uga",
+            text: "Tut",
             isCorrect: false,
           },
           {
-            text: "Shalom",
+            text: "Lejem",
             isCorrect: false,
           },
         ],
-        question: "¿Como se dice mama?",
+      },
+      {
+        question: "¿Como se dice naranja?",
         answers: [
           {
-            text: "Ima",
+            text: "Tapuaj",
+            isCorrect: false,
+          },
+          {
+            text: "Tapuz",
             isCorrect: true,
           },
           {
-            text: "Aba",
+            text: "Tut",
             isCorrect: false,
           },
           {
-            text: "Shalom",
-            isCorrect: false,
-          },
-          {
-            text: "Uga",
+            text: "Lejem",
             isCorrect: false,
           },
         ],
-        question: "¿Como se dice torta?",
+      },
+      {
+        question: "¿Como se dice frutilla?",
         answers: [
           {
-            text: "Ima",
+            text: "Tapuaj",
             isCorrect: false,
           },
           {
-            text: "Aba",
+            text: "Tapuz",
             isCorrect: false,
           },
           {
-            text: "Shalom",
-            isCorrect: false,
-          },
-          {
-            text: "Uga",
+            text: "Tut",
             isCorrect: true,
+          },
+          {
+            text: "Lejem",
+            isCorrect: false,
           },
         ],
-        question: "¿Como se dice hola/paz?",
+      },
+      {
+        question: "¿Como se dice pan?",
         answers: [
           {
-            text: "Ima",
+            text: "Tapuaj",
             isCorrect: false,
           },
           {
-            text: "Aba",
+            text: "Tapuz",
             isCorrect: false,
           },
           {
-            text: "Shalom",
+            text: "Tut",
+            isCorrect: false,
+          },
+          {
+            text: "Lejem",
             isCorrect: true,
-          },
-          {
-            text: "Uga",
-            isCorrect: false,
           },
         ],
       },
     ],
   },
 ];
+
 
 router.post("/", async (req, res) => {
   try {
@@ -117,7 +124,8 @@ router.get("/", async (req, res) => {
       query.unit = unit;
     }
 
-    const levels = await levelModel.find(query);
+    const levels = await levelModel.find(query)
+
     res.json(levels);
   } catch (err) {
     console.error(err);
