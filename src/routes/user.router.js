@@ -7,7 +7,7 @@ import userModel from "../dao/models/user.model.js";
 const router = Router();
 
 router.post("/register", async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password } = req.body.data;
 
   try {
     const existingUser = await userModel.findOne({ email });
@@ -34,7 +34,7 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body.data;
 
   try {
     const user = await userModel.findOne({ email });
