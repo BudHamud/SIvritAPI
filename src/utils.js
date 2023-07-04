@@ -21,3 +21,10 @@ export const sessionConfig = {
     sameSite: 'none',
   },
 }
+
+// const corsConfig = {
+//   cors: {
+//     origin: process.env.CLIENT_URL,
+//     methods: ['GET', 'POST'],
+//   },
+// }
