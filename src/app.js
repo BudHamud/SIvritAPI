@@ -8,7 +8,7 @@ import { connectDB } from './config/dbConfig.js';
 import user from './routes/user.router.js';
 import protect from './routes/protected.router.js';
 import learn from './routes/learn.router.js';
-import chat from './routes/chat.router.js';
+import chat, { initializeSocketIO } from './routes/chat.router.js';
 import { sessionConfig } from './utils.js';
 
 const PORT = process.env.PORT || 8080;
@@ -27,6 +27,8 @@ app.use('/api/protected', protect);
 app.use('/api/learn', learn);
 app.use('/api/chat', chat);
 
-const httpServer = app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+initializeSocketIO(server)

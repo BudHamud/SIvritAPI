@@ -1,22 +1,18 @@
 import chatModel from "../models/chat.model.js";
+import msgModel from "../models/message.model.js";
 
 class ChatService {
+
   async handleChatMessage(message) {
     try {
-      const chat = new chatModel({
-        users: [message.senderId, message.receiverId],
-        messages: [
-          {
-            text: message.text,
-            user: message.senderId,
-            timestamp: new Date(),
-          },
-        ],
+      const chat = new msgModel({
+        text: message.text,
+        user: message.user,
+        timestamp: new Date(),
       });
+      console.log(chat);
 
       await chat.save();
-
-      this.io.emit('message', message);
     } catch (error) {
       console.error("Error al manejar el mensaje de chat:", error);
       throw new Error("Error al manejar el mensaje de chat");
@@ -25,8 +21,9 @@ class ChatService {
 
   async getAllChats() {
     try {
-      const chats = await chatModel.find().populate("users", "users");
-      return chats;
+      // const chats = await chatModel.find().populate("users", "users");
+      const msgs = await msgModel.find()
+      return msgs;
     } catch (error) {
       console.error("Error al obtener los chats:", error);
       throw new Error("Error al obtener los chats");

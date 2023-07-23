@@ -1,36 +1,41 @@
-import { Router } from 'express';
-import { Server } from 'socket.io';
-import ChatService from '../dao/repositories/ChatService.js';
+import { Router } from "express";
+import { Server } from "socket.io";
+import ChatService from "../dao/repositories/ChatService.js";
 
 const router = Router();
 const cs = new ChatService();
 
-// Crear una instancia de socket.io y adjuntarla al enrutador
-const io = new Server();
-router.io = io;
-
-// Configurar el evento de conexión de socket.io
-io.on('connection', (socket) => {
-  console.log('Nuevo cliente conectado');
-
-  socket.on('message', (message) => {
-    // Manejar los mensajes recibidos del cliente
-    handleChatMessage(message);
+export const initializeSocketIO = (server) => {
+  const io = new Server(server, {
+    cors: {
+      origin: true,
+    },
+    allowEIO3: true,
   });
 
-  socket.on('disconnect', () => {
-    console.log('Cliente desconectado');
-  });
-});
+  io.on("connection", (socket) => {
+    // Algo cuando se conectan
 
-// Ruta para obtener todos los chats
-router.get('/', async (req, res) => {
+    socket.on("message", (message) => {
+      cs.handleChatMessage(message);
+      io.emit("message", message);
+    });
+
+    socket.on("disconnect", () => {
+      // Algo cuando se desconectan
+    });
+  });
+
+  return io;
+};
+
+router.get("/", async (req, res) => {
   try {
     const chats = await cs.getAllChats();
     res.json(chats);
   } catch (error) {
-    console.error('Error al obtener los chats:', error);
-    res.status(500).json({ error: 'Error al obtener los chats' });
+    console.error("Error al obtener los chats:", error);
+    res.status(500).json({ error: "Error al obtener los chats" });
   }
 });
 
