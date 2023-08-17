@@ -3,13 +3,9 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const chatSchema = new Schema({
-  users: [{ type: Schema.Types.ObjectId, required: true }],
+  users: [{ type: Schema.Types.ObjectId, required: true, ref: 'users' }],
   messages: [
-    {
-      text: { type: String },
-      user: { type: Schema.Types.ObjectId, ref: 'User' },
-      timestamp: { type: Date, default: Date.now },
-    },
+    { type: Schema.Types.ObjectId, required: true, ref: "messages" }
   ],
 });
 

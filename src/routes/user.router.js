@@ -6,13 +6,25 @@ import userModel from "../dao/models/user.model.js";
 
 const router = Router();
 
+router.get('/user/:username', async (req, res) => {
+  try {
+    const { username } = req.params
+
+    const user = await userModel.findOne({ username: username })
+    res.status(200).json(user._id)
+  } catch(err) {
+    console.log(err);
+    res.status(500).json({ message: "Error al buscar usuario" });
+  }
+})
+
 router.post("/register", async (req, res) => {
   const { username, email, password } = req.body.data;
 
   try {
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
-      return res.status(409).json({ message: "Email already registered" });
+      return res.status(409).json({ message: "El email ya fue registrado" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -29,7 +41,7 @@ router.post("/register", async (req, res) => {
       .json({ message: "Usuario registrado exitosamente", user: newUser });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Registration failed" });
+    res.status(500).json({ message: "Error desconocido" });
   }
 });
 
@@ -37,14 +49,17 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body.data;
 
   try {
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email }).populate({
+      path: 'chats',
+      populate: { path: 'users', model: 'users' }
+    });
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Email incorrecto o usuario inexistente" });
     }
 
     const isMatch = await comparePasswords(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
     req.session.userId = user._id;
@@ -59,13 +74,13 @@ router.post("/login", async (req, res) => {
 
     res.cookie("token", token, cookieOptions).json({ user });
   } catch (error) {
-    res.status(500).json({ message: "Login failed" });
+    res.status(500).json({ message: "Error desconocido" });
   }
 });
 
 router.post("/logout", (req, res) => {
   try {
-    req.session.destroy(); // Destruir la sesión de express-session
+    req.session.destroy();
     const cookieOptions = {
       httpOnly: true,
       secure: true,
@@ -73,14 +88,14 @@ router.post("/logout", (req, res) => {
     };
     res
       .clearCookie("token", cookieOptions)
-      .json({ success: "Logout successful" });
+      .json({ success: "Sesión cerrada con éxito" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Logout failed" });
+    res.status(500).json({ error: "Error desconocido" });
   }
 });
 
-router.get("/checkLoggedIn", (req, res) => {
+router.get("/checkLoggedIn", async (req, res) => {
   const token = req.cookies.token;
 
   if (!token) {
@@ -94,12 +109,21 @@ router.get("/checkLoggedIn", (req, res) => {
 
     const { userId } = decoded;
 
-    const loggedUser = await userModel.findById(userId);
+    try {
+      const loggedUser = await userModel.findById(userId)
+        .populate({
+          path: 'chats',
+          populate: { path: 'users', model: 'users' }
+        });
 
-    if (loggedUser) {
-      return res.json({ isLoggedIn: true, user: loggedUser });
+      if (loggedUser) {
+        return res.json({ isLoggedIn: true, user: loggedUser });
+      } else {
+        return res.json({ isLoggedIn: false });
+      }
+    } catch (error) {
+      return res.json({ isLoggedIn: false });
     }
-    return res.json({ isLoggedIn: false });
   });
 });
 
