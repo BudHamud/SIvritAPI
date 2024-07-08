@@ -1,16 +1,17 @@
 import mongoose from "mongoose";
 
 const levelSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  type: { type: String, required: true },
   unit: { type: Number, required: true },
   level: { type: Number, required: true },
-  exercises: [
-    {
-      question: {
-        type: String,
-        required: true,
-      },
-      answers: { type: Array, default: [] },
-    },
+  content: [
+    // {
+    //   question: {
+    //     type: String,
+    //   },
+    //   answers: { type: Array },
+    // },
   ],
 });
 
